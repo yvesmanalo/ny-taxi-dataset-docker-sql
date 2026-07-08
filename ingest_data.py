@@ -19,9 +19,14 @@ def ingest_data_parquet(url: str, engine: str, target_table: str, chunksize: int
             df_chunk = batch.to_pandas()
 
             if first:
-                df_chunk.head(n=0).to_sql(name=target_table, con=engine, if_exists='replace')
+                df_chunk.head(n=0).to_sql(name=target_table, con=engine, if_exists='replace', index=False)
                 first = False
-            df_chunk.to_sql(name=target_table, con=engine, if_exists='append')
+
+            df_chunk.to_sql(
+                name=target_table,
+                con=engine, if_exists='append',
+                index=False
+            )
 
 
 #function for data ingestion from csv file
@@ -39,15 +44,17 @@ def ingest_data_csv(url: str, engine: str, target_table: str, chunksize: int):
             df_chunk.head(n=0).to_sql(
                 name=target_table,
                 con=engine,
-                if_exists='replace'
+                if_exists='replace',
+                index=False
             )
             first = False
 
-    df_chunk.to_sql(
-        name=target_table,
-        con=engine,
-        if_exists='append'
-    )
+        df_chunk.to_sql(
+            name=target_table,
+            con=engine,
+            if_exists='append',
+            index=False
+        )
 
 #CLI interactivity via click package
 @click.command()
